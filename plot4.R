@@ -15,9 +15,11 @@ Coal <- merge(NEI, SCC_V)
 ## Summarizing the data
 
 Coal$year <- factor(Coal$year)
-em_sum <- tapply(Coal$Emissions, Coal$year, mean)
+em_sum <- tapply(Coal$Emissions, Coal$year, sum)
 
 ##Making plot and writing it to PNG device
-barplot(em_sum, ylab="Coal Combustion Emissions, PM2.5", xlab='Year')
+par(mfrow=c(1,1))
+par(cex=0.8)
+barplot(em_sum/1000, ylab="Emissions PM2.5, kilotons", xlab='Year', col='magenta', main='Coal combustion emissions, USA')
 dev.copy(png, file = "Plot_4.png") 
 dev.off()

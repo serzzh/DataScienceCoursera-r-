@@ -1,0 +1,303 @@
+available.packages()
+install.packages("kernsmooth")
+2
+install.packages("KernSmooth")
+load(KernSmooth)
+library(KernSmooth)
+x <- list(1,'a',TRUE, 1+4i)
+x
+x[[2]]
+x <- 1:4
+x
+y<-2:3
+y
+x+y
+type (y)
+class(y)
+class(x+y)
+x <- c(17,14,4,5,13,12,10)
+x
+x[x>10]
+x[x>10] == 4
+x
+x[x>10] = 4
+x
+read.csv
+read.csv (hw.csv)
+setwd(dsc/datasciencecoursera)
+setwd(/dsc/datasciencecoursera)
+setwd(~/dsc/datasciencecoursera)
+setwd(datasciencecoursera)
+dir
+dir()
+setwd('/dsc/')
+setwd('/dsc/datasciencecourcera')
+quit
+exit
+setwd('/dsc/datasciencecourcera')
+setwd('./dsc/datasciencecourcera')
+getwd()
+library(datasets)#
+data(airquality)
+qplot(Wind, Ozone, data = airquality, facets = . ~ factor(Month))
+library(ggplot2)
+install.packages(ggplot2)
+install.packages('ggplot2')
+library(ggplot2)
+qplot(Wind, Ozone, data = airquality, facets = . ~ factor(Month))
+airquality = transform(airquality, Month = factor(Month))#
+qplot(Wind, Ozone, data = airquality, facets = . ~ Month)
+ggplot
+ggplot2
+library(ggplot2)#
+g <- ggplot(movies, aes(votes, rating))#
+print(g)
+g
+qplot(votes, rating, data = movies)
+qplot(votes, rating, data = movies, smooth = "loess")
+qplot(votes, rating, data = movies, panel = panel.loess)
+qplot(votes, rating, data = movies) + stats_smooth("loess")
+qplot(votes, rating, data = movies) + geom_smooth()
+include(ggplot2)
+library(ggplot2)
+qplot(votes, rating, data = movies) + geom_smooth()
+lpoints
+lpoints()
+text()
+?text
+?axis
+?points
+?lpoints
+programDir <- dirname(sys.frame(1)$ofile)
+library("R.utils")
+install.packages("R.utils")
+library("R.utils")
+checkMD5sums(dir)
+library(devtools)#
+install_github("Rdatatable/data.table",  build_vignettes = FALSE)
+library(data.table)
+fread
+install.packages("kernsmooth")
+source('~/dsc/4.Exploratory Data Analysis/ExData_PeerAssessment2/plot6.R', chdir = TRUE)
+setwd("/Users/sergey/dsc/4.Exploratory Data Analysis/ExData_PeerAssessment2")
+knit2html(README.Rmd)
+library(knitr)
+knit2html(README.Rmd)
+knit2html('README.Rmd')
+source('~/dsc/4.Exploratory Data Analysis/ExData_PeerAssessment2/plot3.R', chdir = TRUE)
+source('~/dsc/4.Exploratory Data Analysis/ExData_PeerAssessment2/plot3.R', chdir = TRUE)
+source('~/dsc/4.Exploratory Data Analysis/ExData_PeerAssessment2/plot3.R', chdir = TRUE)
+knit2html('README.Rmd')
+library(ggplot2)#
+#
+library(plyr)#
+#
+if(!exists('NEI')) NEI<-readRDS("summarySCC_PM25.rds") ## Avoing of double reading and saving our time.#
+#
+if(!exists('SCC')) SCC<-readRDS("Source_Classification_Code.rds")#
+#
+## Extracting data for Baltimore#
+#
+NEI_Balt <- NEI[which(NEI$fips == "24510"),]#
+#
+## Summarizing the data#
+#
+NEI_Balt$type <- factor(NEI_Balt$type)#
+#
+em_sum <- ddply(NEI_Balt,.(year, type), summarize, total_P2.5=sum(Emissions))#
+#
+##Making plot and writing it to PNG device#
+#
+p1 <- qplot(year, total_P2.5, data=em_sum, facets = .~type, geom="bar", stat="identity")#
+#
+print(p1)#
+#
+dev.copy(png, file = "Plot_3.png") #
+#
+dev.off()
+if(!exists('NEI')) NEI<-readRDS("summarySCC_PM25.rds") ## Avoing of double reading and saving our time.#
+#
+if(!exists('SCC')) SCC<-readRDS("Source_Classification_Code.rds")#
+#
+## Summarizing the data#
+#
+NEI$year <- factor(NEI$year)#
+#
+em_sum <- tapply(NEI$Emissions, NEI$year, sum)#
+#
+##Making plot and writing it to PNG device#
+#
+par(mfrow=c(1,1))#
+#
+barplot(em_sum/1000000, ylab="Emissions PM2.5, megatons", xlab='Year', col='magenta', main = 'Total emissions in USA 1999-2008')#
+#
+dev.copy(png, file = "Plot_1.png") #
+#
+dev.off()
+if(!exists('NEI')) NEI<-readRDS("summarySCC_PM25.rds") ## Avoing of double reading and saving our time.#
+#
+if(!exists('SCC')) SCC<-readRDS("Source_Classification_Code.rds")#
+#
+## Extracting data for Baltimore#
+#
+NEI_Balt <- NEI[which(NEI$fips == "24510"),]#
+#
+## Summarizing the data#
+#
+NEI_Balt$year <- factor(NEI_Balt$year)#
+#
+em_sum <- tapply(NEI_Balt$Emissions, NEI_Balt$year, sum)#
+#
+##Making plot and writing it to PNG device#
+#
+par(mfrow=c(1,1))#
+#
+par(cex=0.8)#
+#
+barplot(em_sum/1000, ylab="Emissions PM2.5, kilotons", xlab='Year', col='blue', main='Total emissions PM2.5, Baltimore City')#
+#
+dev.copy(png, file = "Plot_2.png") #
+#
+dev.off()
+library(ggplot2)#
+#
+library(plyr)#
+#
+if(!exists('NEI')) NEI<-readRDS("summarySCC_PM25.rds") ## Avoing of double reading and saving our time.#
+#
+if(!exists('SCC')) SCC<-readRDS("Source_Classification_Code.rds")#
+#
+## Extracting data for Baltimore#
+#
+NEI_Balt <- NEI[which(NEI$fips == "24510"),]#
+#
+## Summarizing the data#
+#
+NEI_Balt$type <- factor(NEI_Balt$type)#
+#
+em_sum <- ddply(NEI_Balt,.(year, type), summarize, total_P2.5=sum(Emissions))#
+#
+##Making plot and writing it to PNG device#
+#
+p1 <- qplot(year, total_P2.5, data=em_sum, facets = .~type, geom="bar", stat="identity")#
+#
+print(p1)#
+#
+dev.copy(png, file = "Plot_3.png") #
+#
+dev.off()
+if(!exists('NEI')) NEI<-readRDS("summarySCC_PM25.rds") ## Avoing of double reading and saving our time.#
+#
+if(!exists('SCC')) SCC<-readRDS("Source_Classification_Code.rds")#
+#
+## Extracting SCC for motor vehicle #
+#
+SCC_V <- SCC[grepl('Coal',SCC$EI.Sector),]#
+#
+##Merging data#
+#
+Coal <- merge(NEI, SCC_V)#
+#
+## Summarizing the data#
+#
+Coal$year <- factor(Coal$year)#
+#
+em_sum <- tapply(Coal$Emissions, Coal$year, sum)#
+#
+##Making plot and writing it to PNG device#
+#
+par(mfrow=c(1,1))#
+#
+par(cex=0.8)#
+#
+barplot(em_sum/1000, ylab="Emissions PM2.5, kilotons", xlab='Year', col='magenta', main='Coal combustion emissions, USA')#
+#
+dev.copy(png, file = "Plot_4.png") #
+#
+dev.off()
+if(!exists('NEI')) NEI<-readRDS("summarySCC_PM25.rds") ## Avoing of double reading and saving our time.#
+#
+if(!exists('SCC')) SCC<-readRDS("Source_Classification_Code.rds")#
+#
+## Extracting SCC for motor vehicle #
+#
+SCC_V <- SCC[grepl('Vehicle',SCC$SCC.Level.Two),]#
+#
+## Extracting data for Baltimore#
+#
+NEI_Balt <- NEI[which(NEI$fips == "24510"),]#
+#
+NEI_Balt$year <- factor(NEI_Balt$year)#
+#
+##Merging data#
+#
+Balt_v <- merge(NEI_Balt, SCC_V)#
+#
+## Summarizing the data#
+#
+em_sum <- tapply(Balt_v$Emissions, Balt_v$year, sum)#
+#
+##Making plot and writing it to PNG device#
+#
+par(mfrow=c(1,1))#
+#
+par(cex=0.8)#
+#
+barplot(em_sum, ylab="Emissions PM2.5, tons", xlab='Year', main="Vehicle Emissions in Baltimore, PM2.5", col='blue')#
+#
+dev.copy(png, file = "Plot_5.png") #
+#
+dev.off()
+if(!exists('NEI')) NEI<-readRDS("summarySCC_PM25.rds") ## Avoing of double reading and saving our time.#
+#
+if(!exists('SCC')) SCC<-readRDS("Source_Classification_Code.rds")#
+#
+## Extracting SCC for motor vehicle #
+#
+SCC_V <- SCC[grepl('Vehicle',SCC$SCC.Level.Two),]#
+#
+## Extracting data for Baltimore#
+#
+NEI_Balt <- NEI[which(NEI$fips == "24510"),]#
+#
+NEI_Balt$year <- factor(NEI_Balt$year)#
+#
+## Extracting data for LA county#
+#
+NEI_LA <- NEI[which(NEI$fips == "06037"),]#
+#
+NEI_LA$year <- factor(NEI_LA$year)#
+#
+##Merging data#
+#
+Balt_v <- merge(NEI_Balt, SCC_V)#
+#
+LA_v <- merge(NEI_LA, SCC_V)#
+#
+## Summarizing the data#
+#
+Balt_v$year <- factor(Balt_v$year)#
+#
+Balt_sum <- tapply(Balt_v$Emissions, Balt_v$year, sum)#
+#
+LA_v$year <- factor(LA_v$year)#
+#
+LA_sum <- tapply(LA_v$Emissions, LA_v$year, sum)#
+#
+##Making plot and writing it to PNG device#
+#
+par(mfrow=c(1,2))#
+#
+par(mar=c(4,4,6,1))#
+#
+par(cex=0.8)#
+#
+barplot(Balt_sum/1000, ylab="Emissions PM2.5, kilotons", xlab='Year', main = 'Baltimore', col='blue')#
+#
+barplot(LA_sum/1000, ylab="Emissions PM2.5, kilotons", xlab='Year', main = 'Los Angeles', col='red')#
+#
+mtext("Motor Vehicle Emissions, PM2.5", side = 3, line = -1.5, outer = TRUE, cex=1, font=2)#
+#
+dev.copy(png, file = "Plot_6.png") #
+#
+dev.off()

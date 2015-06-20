@@ -20,9 +20,11 @@ Balt_v <- merge(NEI_Balt, SCC_V)
 
 ## Summarizing the data
 
-em_sum <- tapply(Balt_v$Emissions, Balt_v$year, mean)
+em_sum <- tapply(Balt_v$Emissions, Balt_v$year, sum)
 
 ##Making plot and writing it to PNG device
-barplot(em_sum, ylab="Vehicle Emissions in Baltimore, PM2.5", xlab='Year')
+par(mfrow=c(1,1))
+par(cex=0.8)
+barplot(em_sum, ylab="Emissions PM2.5, tons", xlab='Year', main="Vehicle Emissions in Baltimore, PM2.5", col='blue')
 dev.copy(png, file = "Plot_5.png") 
 dev.off()

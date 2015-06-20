@@ -19,9 +19,10 @@ NEI_Balt <- NEI[which(NEI$fips == "24510"),]
 ## Summarizing the data
 ## NEI_Balt$year <- factor(NEI_Balt$year)
 NEI_Balt$type <- factor(NEI_Balt$type)
-em_sum <- ddply(NEI_Balt,.(year, type), summarize, mean_P2.5=mean(Emissions))
+em_sum <- ddply(NEI_Balt,.(year, type), summarize, total_P2.5=sum(Emissions))
 
 ##Making plot and writing it to PNG device
-qplot(year, mean_P2.5, data=em_sum, facets = .~type, geom="bar", stat="identity")
+p1 <- qplot(year, total_P2.5, data=em_sum, facets = .~type, geom="bar", stat="identity")
+print(p1)
 dev.copy(png, file = "Plot_3.png") 
 dev.off()

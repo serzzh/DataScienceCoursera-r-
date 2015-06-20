@@ -11,9 +11,10 @@ if(!exists('SCC')) SCC<-readRDS("Source_Classification_Code.rds")
 
 ## Summarizing the data
 NEI$year <- factor(NEI$year)
-em_sum <- tapply(NEI$Emissions, NEI$year, mean)
+em_sum <- tapply(NEI$Emissions, NEI$year, sum)
 
 ##Making plot and writing it to PNG device
-barplot(em_sum, ylab="Emissions, PM2.5", xlab='Year')
+par(mfrow=c(1,1))
+barplot(em_sum/1000000, ylab="Emissions PM2.5, megatons", xlab='Year', col='magenta', main = 'Total emissions in USA 1999-2008')
 dev.copy(png, file = "Plot_1.png") 
 dev.off()

@@ -13,9 +13,11 @@ NEI_Balt <- NEI[which(NEI$fips == "24510"),]
 
 ## Summarizing the data
 NEI_Balt$year <- factor(NEI_Balt$year)
-em_sum <- tapply(NEI_Balt$Emissions, NEI_Balt$year, mean)
+em_sum <- tapply(NEI_Balt$Emissions, NEI_Balt$year, sum)
 
 ##Making plot and writing it to PNG device
-barplot(em_sum, ylab="Emissions in Baltimore, PM2.5", xlab='Year')
+par(mfrow=c(1,1))
+par(cex=0.8)
+barplot(em_sum/1000, ylab="Emissions PM2.5, kilotons", xlab='Year', col='blue', main='Total emissions PM2.5, Baltimore City')
 dev.copy(png, file = "Plot_2.png") 
 dev.off()
