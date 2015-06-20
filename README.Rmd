@@ -18,8 +18,7 @@ Please download data archive https://d396qusza40orc.cloudfront.net/getdata%2Fpro
 2) if the folder is missing checking if zip archive exists and unzipping it  
 3) if no data exits alerts error message  
 
-
-```r
+```{r 1}
 ## Function chsrc for checking if the data exists
 source('chsrc.R')
 ```
@@ -29,8 +28,7 @@ source('chsrc.R')
 2) reading data from .txt (fixed row width file) using laf_open_fwf() function. Please install LaF library, this method works faster than read.fwf or read.table. Function fread() data.table packages gives error on this data due to the problem of leading spaces.  
 3) returning only the mean and the median for each observation  
 
-
-```r
+```{r}
 ## Function for reading variable data from file and returning mean and median
 source('read_var.R')
 ```
@@ -44,8 +42,7 @@ For test and train sets
 4) Reading data for each variable (using read.var)  
 
 
-
-```r
+```{r}
 if(chsrc(destfile, dir)) {
         
         ## Reading filenames to a vector
@@ -81,8 +78,7 @@ if(chsrc(destfile, dir)) {
 ```
 
 5) Creating second dataset with averages for subject, activity and variable  
-
-```r
+```{r}
         ## 5. Creating a second (from data set in step 4), independent tidy data set with the average of each variable for each activity and each subject.
         library(plyr)
         resdata$subject <- factor(resdata$subject)
