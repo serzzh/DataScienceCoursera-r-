@@ -40,8 +40,9 @@ totals <- ddply(data,.(EVTYPE), summarize, injuries=sum(INJURIES), fatalities=su
 ```
 Subsetting events with significant values
 ```{r}
-tot1<-totals[(totals$injuries>5000 | totals$fatalities>400),] # Filtering the most harmful events
-tot2<-totals[(totals$propdmg>0.5 | totals$cropdmg>0.05),] # Filtering the most devastating events
+pr <- 0.995
+tot1<-totals[(totals$injuries>quantile(totals$injuries, probs = pr) | totals$fatalities>quantile(totals$fatalities, probs = pr)),] # Filtering the most harmful events
+tot2<-totals[(totals$propdmg>quantile(totals$propdmg, probs = pr) | totals$cropdmg>quantile(totals$cropdmg, probs = pr) ),] # Filtering the most devastating events
 ```
 
 ## Results
