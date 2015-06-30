@@ -1,10 +1,15 @@
 url <- 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip'
 destfile <- 'getdata-projectfiles-UCI HAR Dataset.zip'
 dir <- 'UCI HAR Dataset'
+vars <- c('X', 'body_acc_x', 'body_acc_y', 'body_acc_z', 'body_gyro_x', 'body_gyro_y', 'body_gyro_z', 'total_acc_x','total_acc_y','total_acc_z')
+resdata <- data.frame('subject'=character(), 'activity'=character())
 options <- c('_test','_train')
 
 ## Function chsrc for checking if the data exists
 source('chsrc.R')
+
+## Function for reading variable data from file and returning mean and median
+source('read_var.R')
 
 if(chsrc(destfile, dir)) {
         
@@ -13,13 +18,7 @@ if(chsrc(destfile, dir)) {
         
         ## 1. Merging the training and the test sets to create one data set.  
         for (i in c(1,2)){
-                
-                ##Reading data
-                data_file <- files[grepl(paste0('X', options[i]), files)]
-                data <- read.table(subj_file, header=FALSE)[,1]
-                
-   
-                
+                             
                 ## Reading subjects
                 subj_file <- files[grepl(paste0('subject', options[i]), files)]
                 subject <- read.table(subj_file, header=FALSE)[,1]
