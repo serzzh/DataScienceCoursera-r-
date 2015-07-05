@@ -13,10 +13,10 @@ read.var <- function (var1, files, option){
         x <- laf_open_fwf(data_file, column_widths = width, column_types=type)
         ## 2. Extracting only the measurements on the mean and standard deviation for each measurement.   
         mean <- apply(x[,], 1, mean)
-        median <- apply(x[,], 1, median)
-        rdata <- cbind(mean, median)
+        sd <- apply(x[,], 1, sd)
+        rdata <- cbind(mean, sd)
         ## 4. Labeling the data set with descriptive variable names. 
-        colnames(rdata) <- c(paste0(var1,'.mean'), paste0(var1,'.median'))
+        colnames(rdata) <- c(paste0(var1,'.mean'), paste0(var1,'.std'))
         rdata
         
 }

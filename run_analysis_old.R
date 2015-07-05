@@ -42,11 +42,11 @@ if(chsrc(destfile, dir)) {
          }
 
         ## 5. Creating a second (from data set in step 4), independent tidy data set with the average of each variable for each activity and each subject.
-        library(plyr)
-        resdata$subject <- factor(resdata$subject)
-        resdata$activity <- factor(resdata$activity) 
-        resdata2 <- ddply(resdata,.(activity, subject), colwise(mean))
-        write.table(resdata2, file='result_data.txt', row.name=FALSE)
+        resdata2 <- resdata %>%
+                group_by(subject,activity) %>%
+                summarise_each(funs(mean))
+        
+        write.table(resdata2, file='result_data2.txt', row.name=FALSE)
                 
 }
 
