@@ -64,6 +64,7 @@ q1<-qplot(train.feat[,1], train.feat[,2], colour=training$classe)
 q2<-qplot(train.feat[,3], train.feat[,4], colour=training$classe)
 grid.arrange(q1, q2)
 ```
+
 We can see cluster structure for different classes with no almost no regression pattern, that can lead us to conclusion that be can achive better results with decision trees algorithms
 
 ## Model Selection Strategy
@@ -95,12 +96,12 @@ confusionMatrix(pretest$classe, pretest1)
 Very fast. Out-of-sample accuracy is around 70%.
 
 Trying random forest method 
-```{r eval=FALSE}
+```{r}
 smallFit1 <- train(small.feat, small$classe, method="rf")
 pretest1 <- predict(smallFit1, newdata=pretest.feat)
 confusionMatrix(pretest$classe, pretest1)
 ```
-Slow. Out-of-sample accuracy is around 80%.
+Slow. Out-of-sample accuracy is around 95%.
 
 ```{r}
 rm(smallFit1, pretest1)
@@ -112,26 +113,16 @@ rm(pretest, pretest.feat, small, small.feat, inSmall)
 
 ### Cross-validation
 
-We have found that could work well on our data. 
+We have found that random forest works well on our data. 
 The next step we are going feed them 70% training set for more accuracy.
 Also to maximize accuracy we are going to use 4-fold cross validation in the function trainControl.
 
-Finally we are using both random forest and LDA algorithm with 4-fold cross validation 
-
-LDA algorithm
-
-```{r}
-ldaFit <- train(train.feat, training$classe, method="lda", trControl = trainControl(method = 'cv', number = 8))
-saveRDS(ldaFit, "lda.RDS")
-## ldaFit<-readRDS('lda.RDS')
-```
+Finally we are using random forest with 4-fold cross validation 
 
 Random forests algorithm
 
 ```{r}
 rfFit <- train(train.feat, training$classe, method="rf", trControl = trainControl(method = 'cv', number = 4))
-saveRDS(rfFit, "rf.RDS")
-## rfFit<-readRDS('rf.RDS')
 ```
 
 ### Out of Sample Error Estimation
@@ -140,15 +131,13 @@ We are going to estimate out of sample error on our remaining 30% of training te
 
 ```{r}
 test.feat<-testing[,-c(1:6,60)]
-## LDA
-test1 <- predict(ldaFit, newdata=test.feat)
-confusionMatrix(testing$classe,test1)
+
 ##Random Forest
 test2 <- predict(rfFit, newdata=test.feat)
 confusionMatrix(testing$classe,test2)
 ```
 
-So after expanding our training data and using cross-validation random forest gives us perfect results while LDA stucks at 71% accuracy.
+So after expanding our training data and using cross-validation random forest gives us perfect results.
 
 ## Prediction of test cases
 
