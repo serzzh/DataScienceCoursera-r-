@@ -1,0 +1,56 @@
+---
+output: pdf_document
+title: "Statistical Inference Project"
+author: Sergey Rakhmatullin
+
+---
+
+## Overview
+
+Text here..
+
+## Exploratory Data Analysis
+
+Text here..
+
+```{r}
+library(ggplot2)
+library(reshape2)
+require(dplyr, quietly=T, warn.conflicts = F)
+require(datasets)
+
+levels(ToothGrowth$supp) <-c('VC','OJ')
+levels(ToothGrowth$dose) <-c(0.5, 1.0, 2.0)
+
+d1<-ggplot(ToothGrowth, aes(y=len, x=supp, group=supp))
+d1<-d1+geom_boxplot(aes(fill=supp))
+d1<-d1+facet_grid(.~dose)
+d1 + ggtitle('Doses') 
+```
+
+## Calculating confidence intervals for linear model
+Suppose we have linear dependancy of the tooth growth lenght on the dose of the treatment
+We want to compare the tooth grouth between two groups (OJ, VC).
+
+```{r}
+
+```
+
+Calculating t-confidence interval for each group
+
+```{r}
+
+with(ToothGrowth, mean)
+
+
+fit1<-lm(len~dose, data=ToothGrowth, subset=(supp=='OJ'))
+fit2<-lm(len~dose, data=ToothGrowth, subset=(supp=='VC'))
+
+k1<-coef(fit1)[2]
+k2<-coef(fit2)[2]
+
+t.test((ToothGrowth$len-mean(ToothGrowth$len))-k1*(ToothGrowth$dose-mean(ToothGrowth$dose)), data=ToothGrowth, subset=(supp=='OJ'))
+
+t.test((ToothGrowth$len-mean(ToothGrowth$len))-k2*(ToothGrowth$dose-mean(ToothGrowth$dose)), data=ToothGrowth, subset=(supp=='VC'))
+
+```

@@ -1,0 +1,126 @@
+---
+title: "Regression Models Project."
+output: pdf_document
+author: Sergey Rakhmatullin
+---
+
+## Executive Summary
+This report is the analys of `mtcars` dataset performed to find out relationship between MPG and a bunch of other variables of dataset and fit a regression model. Another report objective is to answer the question whether an automatic or manual transmission better for MPG and give a statistical evidence.
+
+## Exploratory Data analysis   
+First step is to analyse dependance of MPG on am (tranmission). On Plot 1. in Appendix 1. you can find boxplot that shows that cars with automatic transmissions tend to have less MPG.  
+Next we are going to do quick variable analysis using pairs() function. See Plot 2. in Appendix 1.
+We excluded factor variables to make plot more readable. We can conclude that all of this variations have significant correlation with MPG and could be included in our model as regressors.     
+
+## Model Selection Strategy   
+In this paragraph we are using both 'Step-by-step' and automated strategies to obtain similar results.
+Step-by-step strategy is placed to Appendix 2 to make the main report concise.  
+As an automated method we use AIC algrorithm with both forward selection and backward elimination. 
+```{r}
+full<-lm(mpg~., mtcars)
+best<-step(full, direction = 'both', trace=0)
+summary(best)$call
+```
+As we mentioned before the correlation between variables in `mtcars` dataset is significant so we can possibly upgrade our model with adding interaction between highly correlated regressors.   
+First step, lets find correlations
+```{r}
+corr<-cbind(cor(mtcars$wt,mtcars$qsec), cor(mtcars$wt,mtcars$am), cor(mtcars$am,mtcars$qsec))
+colnames(corr)<-c('wt~qsec','wt~am','am~qsec')
+corr
+```
+Second, add the interaction term `wt:am` and compare with our 'best' model, also compare with the model that has `am` term excluded. 
+```{r}
+fit1<-lm(mpg ~ wt + qsec, mtcars)
+fit3<-lm(mpg ~ wt + qsec + am + wt:am, mtcars)
+anova(fit1, best, fit3)
+```
+So we can see that adding `am` term and `wt:am` interaction term have good impact on RSS.
+
+## Residual Analysis    
+Please refer to Appendix 1 to see Residual plots.    
+Left plots (Residuals vs. Fitted, Scale-Location) have randomly distributed residuals and shows no consistent pattern. Normal Q-Q plot shows that our residuals are normally distributed and Residuals vs. Leverage plot shows no obvious outliers. So we can interpretate this results that residuals for our model are statistical errors with close to normal distribution no dependacy from variables.     
+
+## Error Estimation   
+Also lets perform t-test for groups with different transmission
+```{r}
+t.test(mpg~am, mtcars)
+```
+We have to reject the null hypothesis that we have no difference in means for automated and manual transmission.
+
+## Conclusions
+We could see from previous study that transmission `am` variable:     
+1) can be used as a regressor for linear model fitting and thus have 'linear' influence on the MPG     
+2) highly correlated with `wt` regressor so one should be aware and take interaction into account.    
+Also, we can clearly observe and statistically confirmed that mean and confidence interval of group with automatic transmission is lower in MPG that these of the group with manual transmission if other factors are neglected. So we can conclude that cars with manual transmittion tend to be better for MPG.  
+
+## Appendix 1. Exploratory data plots
+```{r}
+library(ggplot2)
+require(datasets)
+mtcars$am<-factor(mtcars$am)
+levels(mtcars$am) <-c('Automatic','Manual')
+d1<-ggplot(mtcars, aes(y=mpg, x=wt, group=am))
+d1<-d1+geom_boxplot(aes(fill=am)) +facet_grid(.~am)
+d1 + ggtitle('Plot 1. MPG for automatic/manual transmission boxplot') 
+
+pairs(mtcars[c(1,3,4,5,6,7)], main='Plot 2. Variable correlation')
+```
+
+```{r}
+par(mfrow=c(2,2), mar=c(4,4,2,1))
+plot(fit3)
+```
+
+## Appendix 2. Step-by-step model selection
+
+### 1. Fitting the highest correlated with mpg regressor
+Lets find the most correlated with MPG variable:
+```{r}
+remove(mtcars)
+require(datasets)
+cr<-c()
+for (i in 1:dim(mtcars)[2]) cr<-cbind(cr, cor(mtcars$mpg, mtcars[,i]))
+colnames(cr)<-names(mtcars)
+cr
+fit0<-lm(mpg ~ wt, mtcars)
+```
+This is the `wt` variable, so we fit this variable as the first regressor to our model fit0.   
+
+### 2. Adding the highest correlated with residuals to fit0 regressor
+The next step we exclude `wt` influence by taking residuals to model fit0.
+The next regressor will be highest correlated variable to this residuals
+```{r}
+cr<-c()
+for (i in 1:dim(mtcars)[2]) cr<-cbind(cr, cor(residuals(fit0), mtcars[,i]))
+colnames(cr)<-names(mtcars)
+cr
+fit1<-lm(mpg ~ wt + qsec, mtcars)
+```
+This is the `qsec` variable. Lets use it as second regressor and make nested model fit1.     
+
+### 3. Adding the highest correlated with residuals to fit1 regressor
+The next step we exclude both `wt` and `qsec` influence by taking residuals to model fit1.
+The next regressor will be highest correlated variable to this residuals
+```{r}
+cr<-c()
+for (i in 1:dim(mtcars)[2]) cr<-cbind(cr, cor(residuals(fit1), mtcars[,i]))
+colnames(cr)<-names(mtcars)
+cr
+fit2<-lm(mpg ~ wt + qsec + am, mtcars)
+```
+Finally we have `am` variable. Lets use it as third regressor and make nested model fit2. 
+We could proceed this strategy implementation but we know that most of our variables highly correlated and we have a risk of having standard error inflation sooner or later. Of course we always could test both RSS and standard error every step but R have good automated algorithm for this task. Now the good time to analyze results and compare it with some of the machine learning algorithm.    
+
+### 4. Comparing nested models
+So regressors that we found is `wt`, `qsec` and `am`.
+To find out whether they are significant to our model lets compare nested models, subsequently adding variables.
+```{r}
+anova(fit0,fit1,fit2, fit3)
+rbind(summary(fit0)$coef[2,],
+      summary(fit1)$coef[2,],
+      summary(fit2)$coef[2,],
+      summary(fit3)$coef[2,])
+```
+We can see that RSS is reduced by adding variables (wt, qsec, am) to our model. Standard error is higher for fit2 because of the correlation of 'wt' and 'am'.   
+So the conclusion we can make so far: All three variables is significant predictors for the chosen model.
+
