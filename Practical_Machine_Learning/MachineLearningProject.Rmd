@@ -1,0 +1,152 @@
+---
+title: "Machine Learning Project."
+output: html_document
+author: Sergey Rakhmatullin
+---
+
+
+## Summary
+
+Following study is aimed to figure out if the devices Jawbone Up, Nike FuelBand, and Fitbit is possible to determine the correct technique of doing fitness exersizes, e.g. barbell lifts, and predict the manner of doing exersize. The exersizes were performed by six individuals and classified as five different ways of doing exersize (A,B,C,D,E) both correct and incorrect, i.e. we have classification problem and need to deliver prediction model for it and out of sample error estimations.           
+Given data:     
+* https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv (training set)     
+* https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv (testing set)    
+Study should cover following questions:    
+* how model was built,   
+* how cross validation used,     
+* what is expected out of sample error,    
+* and why the following choices were made.   
+The prediction model also should be used to predict 20 different test cases from testing set. 
+
+
+## Loading data and preprocessing
+Downloading training and testing dataset:  
+```{r}
+set.seed('123')
+url<-"https://d396qusza40orc.cloudfront.net/predmachlearn/"
+trainFile<-"pml-training.csv"
+testFile<-"pml-testing.csv"
+
+if(!file.exists(trainFile)) download.file(paste0(url,trainFile), destfile = trainFile, method = "curl") 
+if(!file.exists(testFile)) download.file(paste0(url,testFile), destfile = testFile, method = "curl") 
+train <- read.csv(trainFile)
+test20 <- read.csv(testFile)
+```
+
+Quick view (summary(train)) on the data shows that we have many NA and blank data so we need to clean the data by removing columns with more than 95% NA or blank values in training set.
+```{r}
+test20<-test20[, (colSums(is.na(train) | train=='') < nrow(train) * 0.95)]
+train<-train[, (colSums(is.na(train) | train=='') < nrow(train) * 0.95)]
+```
+
+We have large training set (19622 entries) and very small testing set (20 entries), so to estimate out-of-sample error we split our training set into 70% training and 30% testing set.
+```{r}
+require(caret)
+inTrain <- createDataPartition(y=train$classe, p=0.7, list=FALSE)
+training <- train[inTrain,]
+testing <- train[-inTrain,]
+rm(train)
+dim(training); dim(testing)
+```
+
+We exclude variables that are irrelevant to our study as a features and save our features to train.feat dataset.
+```{r}
+train.feat<-training[,-c(1:6,60)]
+```
+    
+## Exploratory Data analysis 
+I'm not going to demostrate all the feature plots that I've analysed but show typical examples:  
+```{r}
+library(ggplot2)
+library(grid)
+library(gridExtra)
+q1<-qplot(train.feat[,1], train.feat[,2], colour=training$classe)
+q2<-qplot(train.feat[,3], train.feat[,4], colour=training$classe)
+grid.arrange(q1, q2)
+```
+
+We can see cluster structure for different classes with no almost no regression pattern, that can lead us to conclusion that be can achive better results with decision trees algorithms
+
+## Model Selection Strategy
+
+### Method selection
+We are going to try different algorithm on small part of training dataset to figure out accuracy of different methods.
+```{r}
+inSmall <- createDataPartition(y=training$classe, p=0.1, list=FALSE)
+small <- training[inSmall,]
+small.feat <-train.feat[inSmall,]
+pretest <- training[-inSmall,]
+pretest.feat <-train.feat[-inSmall,]
+```
+
+Trying classification tree method 
+```{r}
+smallFit1 <- train(small.feat, small$classe, method="rpart")
+pretest1 <- predict(smallFit1, newdata=pretest.feat)
+confusionMatrix(pretest$classe, pretest1)
+```
+Fast. Out-of-sample accuracy is around 50%.
+
+Trying LDA method 
+```{r}
+smallFit1 <- train(small.feat, small$classe, method="lda")
+pretest1 <- predict(smallFit1, newdata=pretest.feat)
+confusionMatrix(pretest$classe, pretest1)
+```
+Very fast. Out-of-sample accuracy is around 70%.
+
+Trying random forest method 
+```{r}
+smallFit1 <- train(small.feat, small$classe, method="rf")
+pretest1 <- predict(smallFit1, newdata=pretest.feat)
+confusionMatrix(pretest$classe, pretest1)
+```
+Slow. Out-of-sample accuracy is around 95%.
+
+```{r}
+rm(smallFit1, pretest1)
+rm(pretest, pretest.feat, small, small.feat, inSmall)
+```
+
+
+
+
+### Cross-validation
+
+We have found that random forest works well on our data. 
+The next step we are going feed them 70% training set for more accuracy.
+Also to maximize accuracy we are going to use 4-fold cross validation in the function trainControl.
+
+Finally we are using random forest with 4-fold cross validation 
+
+Random forests algorithm
+
+```{r}
+rfFit <- train(train.feat, training$classe, method="rf", trControl = trainControl(method = 'cv', number = 4))
+```
+
+### Out of Sample Error Estimation
+
+We are going to estimate out of sample error on our remaining 30% of training test.
+
+```{r}
+test.feat<-testing[,-c(1:6,60)]
+
+##Random Forest
+test2 <- predict(rfFit, newdata=test.feat)
+confusionMatrix(testing$classe,test2)
+```
+
+So after expanding our training data and using cross-validation random forest gives us perfect results.
+
+## Prediction of test cases
+
+```{r}
+test20.feat<-test20[,-c(1:6,60)]
+result <- predict(rfFit, newdata=test20.feat)
+result
+```
+
+## Conclusions
+Random forest algorithm gives us 99% accuracy estimation and can be used for our purpose.
+
