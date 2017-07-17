@@ -1,0 +1,2 @@
+git subtree add --prefix=RepData_PeerAssessment2 git://github.com/serzzh/RepData_PeerAssessment2 master
+
